@@ -21,7 +21,6 @@ export const SplashScreen = () => {
     const isAuthenticated = async () => {
         // await AsyncStorage.removeItem('token');
         const token = await AsyncStorage.getItem('token');
-        // console.log("🔥🚀 ===>SplashScreen isAuthenticated ===> token", token);
         return !!token;
     };
 
