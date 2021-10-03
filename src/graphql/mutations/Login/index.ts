@@ -7,6 +7,8 @@ export const LOGIN_MUTATION = gql`
             user {
                 id
                 username
+                firstName
+                lastName
             }
             communities {
                 id
