@@ -1,6 +1,7 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
+import config from './config'
 
-const URI = 'https://23759erwg9.execute-api.eu-central-1.amazonaws.com/staging/graphql';
+const URI = config.API_URL
 
 export const client = new ApolloClient({
     uri: URI,
