@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -10,25 +10,48 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useMutation } from '@apollo/client';
 import icons from '../constants/icons'
+import { LOGIN_MUTATION } from '../graphql/mutations';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function LoginScreen() {
-  const [identifier, setIdentifier] = useState('')
-  const [password, setPassword] = useState('')
-
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
-
   const goBack = () => {
     navigation.navigate('MainScreen')
   }
-
   const keyboardHide = () => {
     Keyboard.dismiss();
   }
-  const disabled = false
+
+
+  const [identifier, setIdentifier] = useState('')
+  const [password, setPassword] = useState('')
+  const [login, { data, error, loading }] = useMutation(LOGIN_MUTATION, {})
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Error login', error.message)
+    }
+  }, [error])
+
+  const loginData = data ? data.login : null
+  console.log("🔥🚀 ===> LoginScreen ===> loginData", loginData);
+
+
+  let disabled = false
+  if (identifier === '' || password === '') {
+    disabled = true
+  }
+
+  const onSubmit = () => {
+    login({ variables: { identifier, password } })
+  }
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
@@ -82,12 +105,12 @@ export function LoginScreen() {
             </View>
 
             <TouchableOpacity
+              disabled={loading}
+              onPress={onSubmit}
               activeOpacity={disabled ? 1 : 0.3}
               style={{
                 ...styles.formBtn,
-              }}
-            >
-
+              }}>
               <Image
                 source={icons.button}
                 resizeMode="contain"
@@ -95,16 +118,22 @@ export function LoginScreen() {
                   opacity: disabled ? 0.3 : 1,
                 }}
               />
-
-              <Text
-                style={{
-                  ...styles.formBtnText,
-                  color: disabled ? 'rgba(175, 175, 175, 0.226)' : 'white',
-                }}
-              >
-                Log In
-              </Text>
+              {loading ? (
+                <ActivityIndicator style={{
+                  position: 'absolute',
+                }} />
+              ) : (
+                <Text
+                  style={{
+                    ...styles.formBtnText,
+                    color: disabled ? 'rgba(175, 175, 175, 0.226)' : 'white',
+                  }}
+                >
+                  Log In
+                </Text>
+              )}
             </TouchableOpacity>
+
           </View>
         </ImageBackground>
       </View>
