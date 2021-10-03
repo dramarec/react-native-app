@@ -19,6 +19,7 @@ import { useMutation } from '@apollo/client';
 import icons from '../constants/icons'
 import { LOGIN_MUTATION } from '../graphql/mutations';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Login_Login } from '../graphql/mutations/Login/types';
 
 export function LoginScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<any>>()
@@ -31,27 +32,24 @@ export function LoginScreen() {
 
     const [identifier, setIdentifier] = useState('')
     const [password, setPassword] = useState('')
-    const [login, { data, error, loading }] = useMutation(LOGIN_MUTATION, {})
-    console.log("🔥🚀 ===> LoginScreen ===> error", error);
+    const [login, { data, error, loading }] = useMutation<Login_Login>(LOGIN_MUTATION, {
+        onCompleted: data => {
+            if (data?.login?.token) {
+                AsyncStorage.setItem('token', data.login.token)
+                    .then(() => {
+                        navigation.navigate('UserScreen', {
+                            ...data.login
+                        })
+                    })
+            }
+        }
+    })
 
     useEffect(() => {
         if (error) {
             Alert.alert('Error login', error.message)
         }
     }, [error])
-
-    const loginData = data ? data.login : null
-    console.log("🔥🚀 ===> LoginScreen ===> loginData", loginData);
-    const token = loginData?.token
-
-    if (token) {
-        AsyncStorage.setItem('token', token)
-            .then(() => {
-                navigation.navigate('UserScreen', {
-                    ...loginData
-                })
-            })
-    }
 
     let disabled = false
     if (identifier === '' || password === '') {

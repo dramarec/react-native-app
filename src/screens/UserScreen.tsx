@@ -1,21 +1,94 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRoute } from '@react-navigation/native';
-import { StyleSheet, View, Text, Image } from 'react-native'
+import { StyleSheet, View, Text, Image, Alert, ActivityIndicator } from 'react-native'
 import config from '../../config'
 import icons from '../constants/icons';
+import { useApolloClient, useQuery } from '@apollo/client';
+import { GET_USER_INFO } from '../graphql/queries';
+import { User, User_User } from '../graphql/queries/User/types';
 
 const community = config.COMMUNITY_URL
 const avatar = config.AVATAR_URL
 
 export function UserScreen() {
     const { params }: any = useRoute()
+    // const client = useApolloClient();
+    // console.log("🔥🚀 ===> UserScreen ===> client", client);
+    const paramsUser = params?.user
+    const paramsCommunityId = params?.communities?.[0].id
+    // const styleOverride = params?.communities?.[0].styleOverride.background.value
 
-    console.log("🔥🚀 ===> UserScreen ===> params", params);
-    // const communityId = params?.communities?.[0].id
-    // console.log("🔥🚀 ===> UserScreen ===> communityId", communityId);
-    const user = params?.user
-    // console.log("🔥🚀 ===> UserScreen ===> user", user);
-    const styleOverride = params?.communities?.[0].styleOverride.background.value
+    const [userInfo, setUserInfo] = useState<User_User>()
+    const user = userInfo?.user
+    console.log("🔥🚀 ===> UserScreen ===> user", user);
+    const styleOverride = user?.communitiesWhereMember?.[0].styleOverride.background.value
+    const userCommunityId = user?.communitiesWhereMember?.[0].id
+    const communityId = userCommunityId ? userCommunityId : paramsCommunityId
+
+    const { data, error, loading } = useQuery<User_User>(GET_USER_INFO, {
+        variables: {
+            where: {
+                username: paramsUser?.username || 'test_werz_1',
+            }
+        }
+    })
+
+    useEffect(() => {
+        if (error) {
+            Alert.alert('Error fetching projects', error.message);
+        }
+    }, [error]);
+
+    useEffect(() => {
+        if (data) {
+            setUserInfo(data);
+        }
+    }, [data]);
+
+    if (loading) return <ActivityIndicator size="large" />
+
+
+    function iconLogo() {
+        if (communityId) {
+            return (<Image
+                source={{ uri: `${community}${communityId}` }}
+                style={{
+                    ...styles.logo, backgroundColor: 'white',
+                    borderWidth: 2,
+                    borderColor: "#ffffff"
+                }}
+            />)
+        } else {
+            return (<Image
+                source={icons.logo_def}
+                style={styles.logo}
+            />)
+        }
+    }
+
+    function iconAvatar() {
+        if (user) {
+            return (
+                <Image
+                    source={{
+                        uri: `${avatar}${user?.id}`
+                    }}
+                    style={{
+                        ...styles.avatar,
+                    }}
+                />
+            )
+        } else {
+            return (
+                <Image
+                    source={icons.avatar_def}
+                    style={{
+                        ...styles.avatar,
+                    }}
+                />
+            )
+        }
+    }
 
     return (
         <View style={{
@@ -24,32 +97,24 @@ export function UserScreen() {
         }}>
 
             <View style={styles.logoWrap} >
-                <Image
-                    source={icons.logo_def}
-                    // source={{
-                    //     uri: `${community}${communityId}`,
-                    // }}
-                    style={styles.logo}
-                />
+                {iconLogo()}
             </View>
 
-            <Image
-                source={icons.avatar_def}
-                // source={{
-                //     uri: `${avatar}${user?.id}`
-                // }}
-                style={{
-                    ...styles.avatar,
-                }}
-            />
+            {iconAvatar()}
+
             <View style={{ flexDirection: 'row' }}>
-                <Text style={{ ...styles.textName, marginRight: 5 }}>{user?.firstName}</Text>
-                <Text style={styles.textName}>{user?.lastName}</Text>
+                <Text style={{ ...styles.textName, marginRight: 5 }}>
+                    {user?.firstName}
+                </Text>
+                <Text style={styles.textName}>
+                    {user?.lastName}
+                </Text>
             </View>
             <Text style={styles.textUsername}>
                 @{user?.username}
             </Text>
-        </View >
+
+        </View>
     )
 }
 
@@ -72,9 +137,11 @@ const styles = StyleSheet.create({
     avatarWrap: {
     },
     avatar: {
-        marginBottom: 16,
         width: 120,
         height: 120,
+        borderRadius: 50,
+        borderWidth: 1,
+        marginBottom: 16,
     },
     textName: {
         fontSize: 24,

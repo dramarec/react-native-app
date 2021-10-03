@@ -10,8 +10,10 @@ const httpLink = createHttpLink({
     uri: URI,
 });
 
-const authLink = setContext(async (_, { headers }) => {
+const authLink = setContext(async (ctx, { headers }) => {
+    // console.log("🔥🚀 ===> authLink ===> ctx", ctx);
     const token = await AsyncStorage.getItem('token');
+    // console.log("🔥🚀 ===> authLink ===> token", token);
     return {
         headers: {
             ...headers,
