@@ -9,6 +9,7 @@ const avatar = config.AVATAR_URL
 
 export function UserScreen() {
     const { params }: any = useRoute()
+
     console.log("🔥🚀 ===> UserScreen ===> params", params);
     // const communityId = params?.communities?.[0].id
     // console.log("🔥🚀 ===> UserScreen ===> communityId", communityId);
@@ -45,8 +46,8 @@ export function UserScreen() {
                 <Text style={{ ...styles.textName, marginRight: 5 }}>{user?.firstName}</Text>
                 <Text style={styles.textName}>{user?.lastName}</Text>
             </View>
-            <Text style={styles.username}>
-                @{user.username}
+            <Text style={styles.textUsername}>
+                @{user?.username}
             </Text>
         </View >
     )
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         color: 'white'
     },
-    username: {
+    textUsername: {
         textAlign: 'center',
         color: 'white',
         fontSize: 14,

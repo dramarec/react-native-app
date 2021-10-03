@@ -32,6 +32,7 @@ export function LoginScreen() {
     const [identifier, setIdentifier] = useState('')
     const [password, setPassword] = useState('')
     const [login, { data, error, loading }] = useMutation(LOGIN_MUTATION, {})
+    console.log("🔥🚀 ===> LoginScreen ===> error", error);
 
     useEffect(() => {
         if (error) {

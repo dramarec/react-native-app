@@ -2,7 +2,7 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/types';
-import { CommunitiesScreen, LoginScreen, MainScreen, UserScreen } from '../screens';
+import { CommunitiesScreen, LoginScreen, MainScreen, SplashScreen, UserScreen } from '../screens';
 
 export default function Navigation() {
   return (
@@ -19,6 +19,15 @@ function RootNavigator() {
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
     >
+      <Stack.Screen
+        name="SplashScreen"
+        component={SplashScreen}
+      />
+
+      <Stack.Screen
+        name="UserScreen"
+        component={UserScreen}
+      />
 
       <Stack.Screen
         name="MainScreen"
@@ -31,14 +40,11 @@ function RootNavigator() {
       />
 
       <Stack.Screen
-        name="UserScreen"
-        component={UserScreen}
-      />
-
-      <Stack.Screen
         name="CommunitiesScreen"
         component={CommunitiesScreen}
       />
+
+
 
     </Stack.Navigator>
   );
