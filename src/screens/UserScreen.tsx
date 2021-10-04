@@ -1,6 +1,5 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
-import { useRoute, useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useRoute } from '@react-navigation/native';
 import { StyleSheet, View, Text, Image, Alert, ActivityIndicator, Animated, TouchableOpacity, FlatList } from 'react-native'
 import { useQuery } from '@apollo/client';
 import SlidingUpPanel from 'rn-sliding-up-panel';
@@ -16,29 +15,28 @@ const avatarUrl = config.AVATAR_URL
 const iconUrl = config.ICON_URL
 
 export function UserScreen() {
-    const { params }: any = useRoute()
-
+    const _draggedValue = useRef(new Animated.Value(0)).current
     let _panel: any = useRef(null)
-    const [allowDragging, setAllowDragging] = useState(true);
-    const _draggedValue = useRef(new Animated.Value(0)).current;
+    const { params }: any = useRoute()
+    const [allowDragging, setAllowDragging] = useState(true)
+    const [userInfo, setUserInfo] = useState<User_User>()
+    const [community, setCommunity] = useState<Community>()
 
     const paramsUser = params?.user
     const paramsCommunityId = params?.communities?.[0].id
-    // const styleOverride = params?.communities?.[0].styleOverride.background.value
-
-    const [userInfo, setUserInfo] = useState<User_User>()
     const user = userInfo?.user
     const getCommunitiesList = user?.communitiesWhereMember
-    const styleOverride = user?.communitiesWhereMember?.[0].styleOverride.background.value
-    const userCommunityId = user?.communitiesWhereMember?.[0].id
-    const communityId = userCommunityId ? userCommunityId : paramsCommunityId
+    const styleOverrideValue = getCommunitiesList?.[0].styleOverride.background.value
 
-    const [community, setCommunity] = useState<Community>()
-    console.log("🔥🚀 ===> UserScreen ===> community", community);
+    const styleOverride =
+        community?.styleOverride?.background.value
+            ? community?.styleOverride?.background.value
+            : styleOverrideValue
+
     const { data, error, loading } = useQuery<User_User>(GET_USER_INFO, {
         variables: {
             where: {
-                username: paramsUser?.username ? paramsUser?.username : 'test_werz_1',
+                username: paramsUser?.username ?? null,
             }
         }
     })
@@ -47,13 +45,13 @@ export function UserScreen() {
         if (error) {
             Alert.alert('Error fetching projects', error.message);
         }
-    }, [error]);
+    }, [error])
 
     useEffect(() => {
         if (data) {
             setUserInfo(data);
         }
-    }, [data]);
+    }, [data])
 
     if (loading) return <ActivityIndicator size="large" />
 
@@ -66,39 +64,29 @@ export function UserScreen() {
     }
 
     function iconLogo() {
-        if (communityId) {
+        const userCommunityId = getCommunitiesList?.[0].id
+        const communityId = userCommunityId ? userCommunityId : paramsCommunityId
+        const id = community?.id ? community.id : communityId
+        if (id) {
             return (<Image
-                source={{ uri: `${communityUrl}${communityId}` }}
+                source={{ uri: `${communityUrl}${id}` } ?? icons.logo_def}
                 style={{
-                    ...styles.logo, backgroundColor: 'white',
-                    borderWidth: 2,
-                    borderColor: "#ffffff"
+                    ...styles.logo,
                 }}
-            />)
-        } else {
-            return (<Image
-                source={icons.logo_def}
-                style={styles.logo}
             />)
         }
     }
 
     function iconAvatar() {
+        const id = user?.id
+        const avatar = avatarUrl + id
         if (user) {
             return (
                 <Image
-                    source={{
-                        uri: `${avatarUrl}${user?.id}`
-                    }}
-                    style={{
-                        ...styles.avatar,
-                    }}
-                />
-            )
-        } else {
-            return (
-                <Image
-                    source={icons.avatar_def}
+                    source={
+                        { uri: avatar, }
+                        ?? icons.avatar_def
+                    }
                     style={{
                         ...styles.avatar,
                     }}
@@ -131,33 +119,46 @@ export function UserScreen() {
                         justifyContent: 'flex-end',
                     }}>
                         <Text style={styles.title}>My communities</Text>
-                        <FlatList
-                            data={getCommunitiesList}
-                            showsHorizontalScrollIndicator={false}
-                            horizontal
-                            renderItem={({ item }) => {
-                                const { id } = item
-                                return (
-                                    <TouchableOpacity
-                                        onPress={() => onCommunityId(id)}
-                                    >
-                                        <Image
-                                            source={{
-                                                uri: `${iconUrl}${id}`
-                                            }}
-                                            style={{
-                                                width: 56,
-                                                height: 56,
-                                                borderColor: 'yellow',
-                                                borderWidth: 1,
-                                                margin: 16
+                        <View>
+                            <FlatList
+                                data={getCommunitiesList}
+                                showsHorizontalScrollIndicator={false}
+                                horizontal
+                                renderItem={({ item }) => {
+                                    const { id } = item
+                                    return (
+                                        <TouchableOpacity
+                                            onPress={() => onCommunityId(id)}>
+                                            <Image
+                                                source={{
+                                                    uri: `${iconUrl}${id}`
+                                                }}
+                                                style={{
+                                                    width: 56,
+                                                    height: 56,
+                                                    borderColor: 'white',
+                                                    borderRadius: 50,
+                                                    borderWidth: 1,
+                                                    margin: 16
+                                                }}
+                                            />
+                                        </TouchableOpacity>
+                                    )
+                                }}
+                            />
+                            <Image
+                                source={icons.plus}
+                                style={{
+                                    width: 56,
+                                    height: 56,
+                                    borderColor: 'white',
+                                    borderRadius: 50,
+                                    borderWidth: 1,
+                                    margin: 16
 
-                                            }}
-                                        />
-                                    </TouchableOpacity>
-                                )
-                            }}
-                        />
+                                }}
+                            />
+                        </View>
                     </View>
                 </View>
             </SlidingUpPanel>
@@ -206,8 +207,9 @@ const styles = StyleSheet.create({
         left: 32,
     },
     logo: {
-        height: 24,
-        width: 94,
+        resizeMode: "contain",
+        height: 44,
+        width: 194,
     },
     avatar: {
         width: 120,

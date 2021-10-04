@@ -1,7 +1,8 @@
 const button = require('../assets/images/batton.png')
 const avatar_def = require('../assets/images/avatar_def.png')
 const logo_def = require('../assets/images/logo_def.png')
+const plus = require('../assets/images/plus.png')
 
 export default {
-    button, logo_def, avatar_def
+    button, logo_def, avatar_def, plus
 }

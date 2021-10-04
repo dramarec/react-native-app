@@ -16,10 +16,11 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMutation } from '@apollo/client';
-import icons from '../constants/icons'
-import { LOGIN_MUTATION } from '../graphql/mutations';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { LOGIN_MUTATION } from '../graphql/mutations';
 import { Login_Login } from '../graphql/mutations/Login/types';
+import icons from '../constants/icons'
 
 export function LoginScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<any>>()
@@ -145,7 +146,6 @@ export function LoginScreen() {
                 </ImageBackground>
             </View>
         </TouchableWithoutFeedback>
-
     );
 }
 
