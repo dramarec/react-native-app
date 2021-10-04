@@ -11,9 +11,7 @@ export type RootStackParamList = {
   MainScreen: NavigatorScreenParams<RootTabParamList> | undefined;
   LoginScreen: NavigatorScreenParams<RootTabParamList> | undefined;
   UserScreen: NavigatorScreenParams<RootTabParamList> | undefined;
-  CommunitiesScreen: NavigatorScreenParams<RootTabParamList> | undefined;
   SplashScreen: NavigatorScreenParams<RootTabParamList> | undefined;
-  NotFound: undefined;
 };
 
 export type RootStackScreenProps
@@ -24,6 +22,5 @@ export type RootTabParamList = {
   MainScreen: undefined;
   LoginScreen: undefined;
   UserScreen: undefined;
-  CommunitiesScreen: undefined;
   SplashScreen: undefined;
 };

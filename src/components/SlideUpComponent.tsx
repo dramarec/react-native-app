@@ -2,30 +2,50 @@ import React, { useRef, useState } from 'react'
 import { StyleSheet, View, Text, Image, Animated, TouchableOpacity, FlatList } from 'react-native'
 import SlidingUpPanel from 'rn-sliding-up-panel';
 
-import { Community } from '../graphql/queries/User/types';
 import config from '../../config'
 import icons from '../constants/icons';
 import { SIZES } from '../constants/Layout';
+import { Background, Community } from '../graphql/queries/User/types';
 
 const iconUrl = config.ICON_URL
 
 interface Prop {
     getCommunitiesList: Community[] | undefined
-    setCommunity: (communities: Community | undefined) => void
+    setColor: (color: string | Background) => void
+    setCommunityId: (id: string | undefined) => void
 }
 
-export const SlideUpComponent = ({ setCommunity, getCommunitiesList }: Prop) => {
+export const SlideUpComponent = ({
+    setColor, getCommunitiesList, setCommunityId
+}: Prop) => {
     const _draggedValue = useRef(new Animated.Value(0)).current
     let _panel: any = useRef(null)
     const [allowDragging, setAllowDragging] = useState(true)
 
-    const onCommunityId = (id: string) => {
-        const handleCommunity = getCommunitiesList?.find(el => {
-            return el.id === id
-        })
-        setCommunity(handleCommunity)
+    const getCommunity = (objName: Community) => {
+        const obj = getCommunitiesList?.find(el => el.name === objName.name)
+        const getId = obj?.id
+        setCommunityId(getId)
+
+        if (obj?.styleOverride) {
+            if (Array.isArray(obj.styleOverride?.background?.value)) {
+                const colors = obj.styleOverride?.background?.value
+                const max = colors.length - 1
+                const min = 0
+                const index = Math.round(Math.random() * (max - min) + min)
+                const color = colors[index]
+                _panel.hide()
+                return setColor(color)
+            } else {
+                let color = obj.styleOverride?.background?.value
+                    || obj.styleOverride?.moduleShadowColor
+                _panel.hide()
+                return setColor(color)
+            }
+        }
         _panel.hide()
-    }
+        return setColor('#7b5ee6aa')
+    };
 
     return (
         <SlidingUpPanel
@@ -59,7 +79,7 @@ export const SlideUpComponent = ({ setCommunity, getCommunitiesList }: Prop) => 
                                 const { id } = item
                                 return (
                                     <TouchableOpacity
-                                        onPress={() => onCommunityId(id)}>
+                                        onPress={() => getCommunity(item)}>
                                         <Image
                                             source={{
                                                 uri: `${iconUrl}${id}`
@@ -86,7 +106,6 @@ export const SlideUpComponent = ({ setCommunity, getCommunitiesList }: Prop) => 
                                 borderRadius: 50,
                                 borderWidth: 1,
                                 margin: 16
-
                             }}
                         />
                     </View>

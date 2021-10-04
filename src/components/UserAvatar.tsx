@@ -15,10 +15,7 @@ export const UserAvatar = ({ id }: Prop) => {
         <Image
             source={userAvatar}
             defaultSource={icons.avatar_def}
-            style={{
-                ...styles.avatar,
-
-            }}
+            style={styles.avatar}
         />
     )
 }

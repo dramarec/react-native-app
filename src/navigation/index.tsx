@@ -2,7 +2,7 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/types';
-import { CommunitiesScreen, LoginScreen, MainScreen, SplashScreen, UserScreen } from '../screens';
+import { LoginScreen, MainScreen, SplashScreen, UserScreen } from '../screens';
 
 export default function Navigation() {
   return (
@@ -38,13 +38,6 @@ function RootNavigator() {
         name="LoginScreen"
         component={LoginScreen}
       />
-
-      <Stack.Screen
-        name="CommunitiesScreen"
-        component={CommunitiesScreen}
-      />
-
-
 
     </Stack.Navigator>
   );

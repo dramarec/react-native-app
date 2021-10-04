@@ -1,35 +1,30 @@
 import React, { useEffect, useState } from 'react'
-import { useRoute } from '@react-navigation/native';
 import { StyleSheet, View, Text, Alert, ActivityIndicator } from 'react-native'
+import { useRoute } from '@react-navigation/native';
 import { useQuery } from '@apollo/client';
 
 import { GET_USER_INFO } from '../graphql/queries';
-import { Community, User_User } from '../graphql/queries/User/types';
+import { Background, User_User } from '../graphql/queries/User/types';
 import { CommunityLogo, SlideUpComponent, UserAvatar } from '../components';
 
 export function UserScreen() {
     const { params }: any = useRoute()
+    const [color, setColor] = useState<string | Background>()
+    const [handleId, setHandleId] = useState<string>()
     const [userInfo, setUserInfo] = useState<User_User>()
-    const [community, setCommunity] = useState<Community>()
 
     const paramsUser = params?.user
-    const paramsCommunityId = params?.communities?.[1].id
+    const paramsCommunityId = params?.communities?.[0].id
+
     const user = userInfo?.user
     const getCommunitiesList = user?.communitiesWhereMember
-    const styleOverrideValue = getCommunitiesList?.[1]?.styleOverride?.background?.value
-    const userCommunityId = getCommunitiesList?.[1].id
+    const userCommunityId = getCommunitiesList?.[0].id
     const communityId = userCommunityId ?? paramsCommunityId
-    const id = community?.id ?? communityId
-
-    const styleOverride =
-        community?.styleOverride?.background?.value
-            ? community?.styleOverride?.background?.value
-            : styleOverrideValue
 
     const { data, error, loading } = useQuery<User_User>(GET_USER_INFO, {
         variables: {
             where: {
-                username: paramsUser?.username ?? 'test_werz_1',
+                username: paramsUser?.username ?? 'test_werz_0',
             }
         }
     })
@@ -49,11 +44,11 @@ export function UserScreen() {
     if (loading) return <ActivityIndicator size="large" />
 
     return (
-        <View style={{
-            ...styles.container,
-            backgroundColor: styleOverride ? styleOverride : 'tomato'
-        }}>
-            <CommunityLogo id={id} />
+        <View style={[
+            styles.container,
+            { backgroundColor: `${color}` }
+        ]}>
+            <CommunityLogo id={handleId ?? communityId} />
             <UserAvatar id={user?.id} />
 
             <View style={{ flexDirection: 'row' }}>
@@ -69,8 +64,9 @@ export function UserScreen() {
             </Text>
 
             <SlideUpComponent
+                setColor={setColor}
+                setCommunityId={setHandleId}
                 getCommunitiesList={getCommunitiesList}
-                setCommunity={setCommunity}
             />
         </View>
     )

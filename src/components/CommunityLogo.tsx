@@ -8,10 +8,9 @@ const communityUrl = config.COMMUNITY_URL
 interface Prop {
     id: string | undefined
 }
+
 export const CommunityLogo = ({ id }: Prop) => {
-
     const url = { uri: `${communityUrl}${id}` } || icons.logo_def
-
     return (
         <View style={styles.logoWrap} >
             <Image

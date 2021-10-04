@@ -1,17 +1,18 @@
 
 export interface Background {
     type: string;
-    value: string;
+    value: string | string[];
 }
 
 export interface StyleOverride {
     background: Background;
+    moduleShadowColor: Background
 }
 
 export interface Community {
     id: string;
     name: string;
-    styleOverride: StyleOverride;
+    styleOverride: StyleOverride | null;
 }
 
 export interface User {
