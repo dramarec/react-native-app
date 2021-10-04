@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useRoute } from '@react-navigation/native';
 import { StyleSheet, View, Text, Image, Alert, ActivityIndicator, Animated, TouchableOpacity, FlatList } from 'react-native'
 import { useQuery } from '@apollo/client';
@@ -9,9 +9,8 @@ import { Community, User_User } from '../graphql/queries/User/types';
 import config from '../../config'
 import icons from '../constants/icons';
 import { SIZES } from '../constants/Layout';
+import { CommunityLogo, UserAvatar } from '../components';
 
-const communityUrl = config.COMMUNITY_URL
-const avatarUrl = config.AVATAR_URL
 const iconUrl = config.ICON_URL
 
 export function UserScreen() {
@@ -23,20 +22,23 @@ export function UserScreen() {
     const [community, setCommunity] = useState<Community>()
 
     const paramsUser = params?.user
-    const paramsCommunityId = params?.communities?.[0].id
+    const paramsCommunityId = params?.communities?.[1].id
     const user = userInfo?.user
     const getCommunitiesList = user?.communitiesWhereMember
-    const styleOverrideValue = getCommunitiesList?.[0].styleOverride.background.value
+    const styleOverrideValue = getCommunitiesList?.[1]?.styleOverride?.background?.value
+    const userCommunityId = getCommunitiesList?.[1].id
+    const communityId = userCommunityId ?? paramsCommunityId
+    const id = community?.id ?? communityId
 
     const styleOverride =
-        community?.styleOverride?.background.value
-            ? community?.styleOverride?.background.value
+        community?.styleOverride?.background?.value
+            ? community?.styleOverride?.background?.value
             : styleOverrideValue
 
     const { data, error, loading } = useQuery<User_User>(GET_USER_INFO, {
         variables: {
             where: {
-                username: paramsUser?.username ?? null,
+                username: paramsUser?.username ?? 'test_werz_1',
             }
         }
     })
@@ -61,38 +63,6 @@ export function UserScreen() {
         })
         setCommunity(handleCommunity)
         _panel.hide()
-    }
-
-    function iconLogo() {
-        const userCommunityId = getCommunitiesList?.[0].id
-        const communityId = userCommunityId ? userCommunityId : paramsCommunityId
-        const id = community?.id ? community.id : communityId
-        if (id) {
-            return (<Image
-                source={{ uri: `${communityUrl}${id}` } ?? icons.logo_def}
-                style={{
-                    ...styles.logo,
-                }}
-            />)
-        }
-    }
-
-    function iconAvatar() {
-        const id = user?.id
-        const avatar = avatarUrl + id
-        if (user) {
-            return (
-                <Image
-                    source={
-                        { uri: avatar, }
-                        ?? icons.avatar_def
-                    }
-                    style={{
-                        ...styles.avatar,
-                    }}
-                />
-            )
-        }
     }
 
     function rendeCommunitiesList() {
@@ -168,14 +138,12 @@ export function UserScreen() {
     return (
         <View style={{
             ...styles.container,
-            backgroundColor: styleOverride
+            backgroundColor: styleOverride ? styleOverride : 'tomato'
         }}>
 
-            <View style={styles.logoWrap} >
-                {iconLogo()}
-            </View>
+            <CommunityLogo id={id} />
 
-            {iconAvatar()}
+            <UserAvatar id={user?.id} />
 
             <View style={{ flexDirection: 'row' }}>
                 <Text style={{ ...styles.textName, marginRight: 5 }}>
