@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, Image, Animated, TouchableOpacity, FlatList } f
 import SlidingUpPanel from 'rn-sliding-up-panel'
 
 import config from '../../config'
-import icons from '../constants/icons'
 import { SIZES } from '../constants/Layout'
 import { Background, Community } from '../graphql/queries/User/types'
 
@@ -95,17 +94,6 @@ export const SlideUpComponent = ({
                                         />
                                     </TouchableOpacity>
                                 )
-                            }}
-                        />
-                        <Image
-                            source={icons.plus}
-                            style={{
-                                width: 56,
-                                height: 56,
-                                borderColor: 'white',
-                                borderRadius: 50,
-                                borderWidth: 1,
-                                margin: 16
                             }}
                         />
                     </View>
