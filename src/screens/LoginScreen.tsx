@@ -45,7 +45,15 @@ export function LoginScreen() {
             }
         }
     })
-    console.log("🔥🚀 ===> LoginScreen ===> data", data)
+    const loginError = data?.login.errors[0]
+    const errorCode = loginError?.errorCode
+    const errorPath = loginError?.path[0]
+
+    useEffect(() => {
+        if (errorCode) {
+            Alert.alert('Error login', errorCode || errorPath)
+        }
+    }, [errorCode])
     
     useEffect(() => {
         if (error) {

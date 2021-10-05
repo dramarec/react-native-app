@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 import { View, ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/core'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 export const SplashScreen = () => {
-    const navigation = useNavigation()
+    const navigation = useNavigation<NativeStackNavigationProp<any>>()
 
     useEffect(() => {
         const checkedUser = async (): Promise<any> => {
@@ -18,7 +19,7 @@ export const SplashScreen = () => {
     }, [navigation])
 
     const isAuthenticated = async () => {
-        // await AsyncStorage.removeItem('token')
+        await AsyncStorage.removeItem('token')
         const token = await AsyncStorage.getItem('token')
         return !!token
     }

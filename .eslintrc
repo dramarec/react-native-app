@@ -55,7 +55,8 @@
         "@typescript-eslint/restrict-plus-operands": "off",
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/restrict-template-expressions": "off",
-        "@typescript-eslint/no-base-to-string": "off"
+        "@typescript-eslint/no-base-to-string": "off",
+        "react-hooks/exhaustive-deps": "off"
     },
     "settings": {
         "import/parsers": {

@@ -10,11 +10,12 @@ interface Prop {
 }
 
 export const CommunityLogo = ({ id }: Prop) => {
-    const url = { uri: `${communityUrl}${id}` } || icons.logo_def
+    const url = { uri: communityUrl + id }
     return (
         <View style={styles.logoWrap} >
             <Image
                 source={url}
+                defaultSource={icons.logo_def}
                 style={styles.logo}
             />
         </View>

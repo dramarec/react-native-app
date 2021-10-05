@@ -25,7 +25,8 @@ export function UserScreen() {
     const { data, error, loading } = useQuery<User_User>(GET_USER_INFO, {
         variables: {
             where: {
-                username: paramsUser?.username ?? 'test_werz_1',
+                username:
+                    paramsUser?.username
             }
         }
     })

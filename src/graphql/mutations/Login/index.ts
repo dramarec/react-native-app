@@ -15,6 +15,10 @@ export const LOGIN_MUTATION = gql`
                 name
                 styleOverride
             }
+            errors {
+                errorCode
+                path
+            }
         }
     }
 `

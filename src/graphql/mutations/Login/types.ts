@@ -20,10 +20,16 @@ export interface User {
     username: string
 }
 
+export interface Error {
+    errorCode: string
+    path: string[]
+}
+
 export interface Login {
     token: string;
     user: User;
     communities: Community[];
+    errors: Error[]
 }
 
 export interface Login_Login {
