@@ -12,6 +12,8 @@ import {
     Image,
     ActivityIndicator,
     Alert,
+    KeyboardAvoidingView,
+    Platform,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -27,10 +29,8 @@ export function LoginScreen() {
     const goBack = () => {
         navigation.navigate('MainScreen')
     }
-    const keyboardHide = () => {
-        Keyboard.dismiss()
-    }
 
+    const [isShowKeyboard, setIsShowKeyboard] = useState(false)
     const [identifier, setIdentifier] = useState('')
     const [password, setPassword] = useState('')
     const [login, { data, error, loading }] = useMutation<Login_Login>(LOGIN_MUTATION, {
@@ -49,12 +49,17 @@ export function LoginScreen() {
     const errorCode = loginError?.errorCode
     const errorPath = loginError?.path[0]
 
+    const keyboardHide = () => {
+        Keyboard.dismiss()
+        setIsShowKeyboard(false)
+    }
+
     useEffect(() => {
         if (errorCode) {
             Alert.alert('Error login', errorCode || errorPath)
         }
     }, [errorCode])
-    
+
     useEffect(() => {
         if (error) {
             Alert.alert('Error login', error.message)
@@ -81,77 +86,85 @@ export function LoginScreen() {
                     <TouchableOpacity style={styles.goBackBtn} onPress={goBack}>
                         <Text style={styles.btnText}>Go back</Text>
                     </TouchableOpacity>
+                    <KeyboardAvoidingView
+                        // eslint-disable-next-line eqeqeq
+                        behavior={Platform.OS == "ios" ? "padding" : "height"}
+                    >
 
-                    <View
-                        style={{
-                            marginBottom: 310,
-                        }}>
-
-                        <View style={{
-                            ...styles.form,
-                        }}
-                        >
-                            <Text style={styles.hero}>
-                                Welcome back!
-                            </Text>
-                            <Text style={styles.text}>
-                                Log in using your username or phone number.
-                            </Text>
-                            <TextInput
-                                value={identifier.toLowerCase()}
-                                onChangeText={setIdentifier}
-                                style={styles.input}
-                                textAlign={"center"}
-                                placeholder='Username'
-                                maxLength={20}
-                            />
-                            <TextInput
-                                style={styles.input}
-                                textAlign={"center"}
-                                value={password}
-                                onChangeText={setPassword}
-                                placeholder='Password'
-                                secureTextEntry={true}
-                            />
-
-                            <Text
-                                style={styles.linkText}
-                                onPress={async () => await Linking.openURL('http://google.com')}>
-                                Forgot password
-                            </Text>
-                        </View>
-
-                        <TouchableOpacity
-                            disabled={loading}
-                            onPress={onSubmit}
-                            activeOpacity={disabled ? 1 : 0.3}
+                        <View
                             style={{
-                                ...styles.formBtn,
+                                marginBottom: isShowKeyboard ? 10 : 120,
                             }}>
-                            <Image
-                                source={icons.button}
-                                resizeMode="contain"
-                                style={{
-                                    opacity: disabled ? 0.3 : 1,
-                                }}
-                            />
-                            {loading ? (
-                                <ActivityIndicator style={{
-                                    position: 'absolute',
-                                }} />
-                            ) : (
-                                <Text
-                                    style={{
-                                        ...styles.formBtnText,
-                                        color: disabled ? 'rgba(175, 175, 175, 0.226)' : 'white',
-                                    }}
-                                >
-                                    Log In
-                                </Text>
-                            )}
-                        </TouchableOpacity>
 
-                    </View>
+                            <View style={{
+                                ...styles.form,
+                            }}
+                            >
+                                <Text style={styles.hero}>
+                                    Welcome back!
+                                </Text>
+                                <Text style={styles.text}>
+                                    Log in using your username or phone number.
+                                </Text>
+                                <TextInput
+                                    value={identifier.toLowerCase()}
+                                    onChangeText={setIdentifier}
+                                    onFocus={() => setIsShowKeyboard(true)}
+                                    style={styles.input}
+                                    textAlign={"center"}
+                                    placeholder='Username'
+                                    maxLength={20}
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    onFocus={() => setIsShowKeyboard(true)}
+                                    textAlign={"center"}
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    placeholder='Password'
+                                    secureTextEntry={true}
+                                />
+
+                                <Text
+                                    style={styles.linkText}
+                                    onPress={async () => await Linking.openURL('http://google.com')}>
+                                    Forgot password
+                                </Text>
+                            </View>
+
+                            <TouchableOpacity
+                                disabled={loading}
+                                onPress={onSubmit}
+                                activeOpacity={disabled ? 1 : 0.3}
+                                style={{
+                                    ...styles.formBtn,
+                                }}>
+                                <Image
+                                    source={icons.button}
+                                    resizeMode="contain"
+                                    style={{
+                                        opacity: disabled ? 0.3 : 1,
+                                    }}
+                                />
+                                {loading ? (
+                                    <ActivityIndicator style={{
+                                        position: 'absolute',
+                                    }} />
+                                ) : (
+                                    <Text
+                                        style={{
+                                            ...styles.formBtnText,
+                                            color: disabled ? 'rgba(255, 255, 255, 0.664)' : 'white',
+                                        }}
+                                    >
+                                        Log in
+                                    </Text>
+                                )}
+                            </TouchableOpacity>
+
+                        </View>
+                    </KeyboardAvoidingView>
+
                 </ImageBackground>
             </View>
         </TouchableWithoutFeedback>
