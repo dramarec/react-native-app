@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { useNavigation } from '@react-navigation/core';
-import { View, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native';
+import * as React from 'react'
+import { useNavigation } from '@react-navigation/core'
+import { View, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native'
 
 export function MainScreen() {
-    const navigation = useNavigation();
+    const navigation = useNavigation()
 
     const onLogin = () => {
-        navigation.navigate('LoginScreen');
+        navigation.navigate('LoginScreen')
     }
 
     return (
@@ -20,7 +20,7 @@ export function MainScreen() {
                 </TouchableOpacity>
             </ImageBackground>
         </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -41,4 +41,4 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
     }
-});
+})

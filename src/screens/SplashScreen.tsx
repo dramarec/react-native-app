@@ -1,33 +1,31 @@
-import React, { useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect } from 'react'
+import { View, ActivityIndicator } from 'react-native'
+import { useNavigation } from '@react-navigation/core'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const SplashScreen = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation()
 
     useEffect(() => {
-        const checkedUser = async () => {
+        const checkedUser = async (): Promise<any> => {
             if (await isAuthenticated()) {
-                navigation.navigate('UserScreen');
+                navigation.navigate('UserScreen')
             } else {
-                navigation.navigate('MainScreen');
-                // navigation.navigate('CommunitiesScreen');
+                navigation.navigate('MainScreen')
             }
-        };
-        checkedUser();
-    }, []);
+        }
+        checkedUser()
+    }, [navigation])
 
     const isAuthenticated = async () => {
-        // await AsyncStorage.removeItem('token');
-        const token = await AsyncStorage.getItem('token');
-        return !!token;
-    };
+        // await AsyncStorage.removeItem('token')
+        const token = await AsyncStorage.getItem('token')
+        return !!token
+    }
 
     return (
         <View style={{ flex: 1, justifyContent: 'center' }}>
             <ActivityIndicator />
         </View>
-    );
-};
-
+    )
+}

@@ -26,7 +26,6 @@ export interface Login {
     communities: Community[];
 }
 
-
 export interface Login_Login {
     login: Login;
 }

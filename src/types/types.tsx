@@ -1,5 +1,4 @@
-import { NavigatorScreenParams } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NavigatorScreenParams } from '@react-navigation/native'
 
 declare global {
   namespace ReactNavigation {
@@ -7,20 +6,16 @@ declare global {
   }
 }
 
-export type RootStackParamList = {
+export interface RootStackParamList {
   MainScreen: NavigatorScreenParams<RootTabParamList> | undefined;
   LoginScreen: NavigatorScreenParams<RootTabParamList> | undefined;
   UserScreen: NavigatorScreenParams<RootTabParamList> | undefined;
   SplashScreen: NavigatorScreenParams<RootTabParamList> | undefined;
-};
+}
 
-export type RootStackScreenProps
-  <T extends keyof RootStackParamList> =
-  NativeStackScreenProps<RootStackParamList, T>;
-
-export type RootTabParamList = {
+export interface RootTabParamList {
   MainScreen: undefined;
   LoginScreen: undefined;
   UserScreen: undefined;
   SplashScreen: undefined;
-};
+}

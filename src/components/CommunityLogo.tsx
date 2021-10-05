@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet, Image } from 'react-native'
 import config from '../../config'
-import icons from '../constants/icons';
+import icons from '../constants/icons'
 
 const communityUrl = config.COMMUNITY_URL
 

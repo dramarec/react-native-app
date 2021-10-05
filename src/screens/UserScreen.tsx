@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, Text, Alert, ActivityIndicator } from 'react-native'
-import { useRoute } from '@react-navigation/native';
-import { useQuery } from '@apollo/client';
+import { useRoute } from '@react-navigation/native'
+import { useQuery } from '@apollo/client'
 
-import { GET_USER_INFO } from '../graphql/queries';
-import { Background, User_User } from '../graphql/queries/User/types';
-import { CommunityLogo, SlideUpComponent, UserAvatar } from '../components';
+import { GET_USER_INFO } from '../graphql/queries'
+import { Background, User_User } from '../graphql/queries/User/types'
+import { CommunityLogo, SlideUpComponent, UserAvatar } from '../components'
 
 export function UserScreen() {
     const { params }: any = useRoute()
@@ -20,24 +20,25 @@ export function UserScreen() {
     const getCommunitiesList = user?.communitiesWhereMember
     const userCommunityId = getCommunitiesList?.[0].id
     const communityId = userCommunityId ?? paramsCommunityId
+    const colorObj = color ?? '#6cca88'
 
     const { data, error, loading } = useQuery<User_User>(GET_USER_INFO, {
         variables: {
             where: {
-                username: paramsUser?.username ?? 'test_werz_0',
+                username: paramsUser?.username ?? 'test_werz_1',
             }
         }
     })
 
     useEffect(() => {
         if (error) {
-            Alert.alert('Error fetching projects', error.message);
+            Alert.alert('Error fetching projects', error.message)
         }
     }, [error])
 
     useEffect(() => {
         if (data) {
-            setUserInfo(data);
+            setUserInfo(data)
         }
     }, [data])
 
@@ -46,7 +47,7 @@ export function UserScreen() {
     return (
         <View style={[
             styles.container,
-            { backgroundColor: `${color}` }
+            { backgroundColor: `${colorObj}` }
         ]}>
             <CommunityLogo id={handleId ?? communityId} />
             <UserAvatar id={user?.id} />

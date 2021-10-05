@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react'
 import { StyleSheet, View, Text, Image, Animated, TouchableOpacity, FlatList } from 'react-native'
-import SlidingUpPanel from 'rn-sliding-up-panel';
+import SlidingUpPanel from 'rn-sliding-up-panel'
 
 import config from '../../config'
-import icons from '../constants/icons';
-import { SIZES } from '../constants/Layout';
-import { Background, Community } from '../graphql/queries/User/types';
+import icons from '../constants/icons'
+import { SIZES } from '../constants/Layout'
+import { Background, Community } from '../graphql/queries/User/types'
 
 const iconUrl = config.ICON_URL
 
@@ -37,7 +37,7 @@ export const SlideUpComponent = ({
                 _panel.hide()
                 return setColor(color)
             } else {
-                let color = obj.styleOverride?.background?.value
+                const color = obj.styleOverride?.background?.value
                     || obj.styleOverride?.moduleShadowColor
                 _panel.hide()
                 return setColor(color)
@@ -45,7 +45,7 @@ export const SlideUpComponent = ({
         }
         _panel.hide()
         return setColor('#7b5ee6aa')
-    };
+    }
 
     return (
         <SlidingUpPanel
@@ -61,7 +61,7 @@ export const SlideUpComponent = ({
             height={SIZES.height + 120}
             friction={0.8}
             onBottomReached={() => {
-                setAllowDragging(true);
+                setAllowDragging(true)
             }}
         >
             <View style={styles.wrapper}>

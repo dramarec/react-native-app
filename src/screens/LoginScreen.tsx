@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import {
     StyleSheet,
     View,
@@ -12,14 +12,14 @@ import {
     Image,
     ActivityIndicator,
     Alert,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useMutation } from '@apollo/client';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+} from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useMutation } from '@apollo/client'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import { LOGIN_MUTATION } from '../graphql/mutations';
-import { Login_Login } from '../graphql/mutations/Login/types';
+import { LOGIN_MUTATION } from '../graphql/mutations'
+import { Login_Login } from '../graphql/mutations/Login/types'
 import icons from '../constants/icons'
 
 export function LoginScreen() {
@@ -28,24 +28,25 @@ export function LoginScreen() {
         navigation.navigate('MainScreen')
     }
     const keyboardHide = () => {
-        Keyboard.dismiss();
+        Keyboard.dismiss()
     }
 
     const [identifier, setIdentifier] = useState('')
     const [password, setPassword] = useState('')
     const [login, { data, error, loading }] = useMutation<Login_Login>(LOGIN_MUTATION, {
-        onCompleted: data => {
-            if (data?.login?.token) {
-                AsyncStorage.setItem('token', data.login.token)
+        onCompleted: _data => {
+            if (_data?.login?.token) {
+                AsyncStorage.setItem('token', _data.login.token)
                     .then(() => {
                         navigation.navigate('UserScreen', {
-                            ...data.login
+                            ..._data.login
                         })
                     })
             }
         }
     })
-
+    console.log("🔥🚀 ===> LoginScreen ===> data", data)
+    
     useEffect(() => {
         if (error) {
             Alert.alert('Error login', error.message)
@@ -107,7 +108,7 @@ export function LoginScreen() {
 
                             <Text
                                 style={styles.linkText}
-                                onPress={() => Linking.openURL('http://google.com')}>
+                                onPress={async () => await Linking.openURL('http://google.com')}>
                                 Forgot password
                             </Text>
                         </View>
@@ -146,7 +147,7 @@ export function LoginScreen() {
                 </ImageBackground>
             </View>
         </TouchableWithoutFeedback>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
@@ -163,11 +164,6 @@ const styles = StyleSheet.create({
     goBackBtn: {
         position: 'absolute',
         top: 76,
-        left: 30
-    },
-    userBtn: {
-        position: 'absolute',
-        top: 106,
         left: 30
     },
     btnText: {
@@ -253,4 +249,4 @@ const styles = StyleSheet.create({
         opacity: 0.6,
         marginTop: 10,
     }
-});
+})
